@@ -155,7 +155,9 @@ El consumo de la CPU se redujo pero los tiempos de espera no cambiaron.
 
 4. **Adjunte tabla de tiempos e interprete por qué la función tarda tando tiempo.**
     
+    ![1070000](https://github.com/aosfandres/lab-8-ARSW/blob/master/images/part1/25.PNG)
     
+    ![1070009](https://github.com/aosfandres/lab-8-ARSW/blob/master/images/part1/24.PNG)
 
     La implementación de la función de Fibonacci no aprovecha bien los recursos del sistema al estar implementada iterativamente y no usar más hilos, se repiten cálculos para hallar el resultado de cada iteración que podrían ser almacenados en memoria.
 
