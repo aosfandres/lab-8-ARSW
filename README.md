@@ -121,87 +121,19 @@ El consumo de la CPU se redujo pero los tiempos de espera no cambiaron.
 
 **Preguntas**
 
-**Preguntas**
-
-1. **¿Cuántos y cuáles recursos crea Azure junto con la VM?**
-
-    Azure crea 6 recursos junto con la máquina virtual, estos son:
-    * Virtual Network
-    * Storage Account
-    * Public IP Address
-    * Network Security Group
-    * Network Interface
-    * Disk
-    
-2. **¿Brevemente describa para qué sirve cada recurso?**
-    
-    - **Virtual Network** tiene como objetivo brindar comunicación entre recursos de azure como Azure Virtual Machines, es similar a una red tradicional, sin embargo ofrece beneficios adicionales de Azure como escalabilidad, aislamiento y disponibilidad.
-    
-    - **Storage Account** contiene todos los objetos de datos de Azure Storage: blobs, archivos, colas, tablas y discos. Proporciona un espacio de nombres único para sus datos de Azure Storage al que se puede acceder desde cualquier lugar del mundo a través de HTTP o HTTPS, los datos de la cuenta de almacenamiento de Azure son duraderos y de alta disponibilidad, seguros y escalables de forma masiva.
-
-    - **Public IP Address** permite que los recursos de azure se comuniquen con internet y con servicios públicos de azure, esta dirección es asignada a un recurso hasta que este se elimine. Un recurso de dirección IP pública se puede asociar con: Interfaces de red de máquinas virtuales, balanceadores de carga orientados a Internet, pasarelas VPN, pasarelas de aplicación, cortafuegos Azure.
-    
-    - **Network Security Group** permite filtrar el tráfico hacia y desde los recursos en una red virtual de Azure, un grupo de seguridad permite definir reglas de entrada y/o salida que permitan o denieguen el tráfico de red entrante o saliente de varios tipos de recursos de Azure.
-    
-    - **Network Interface** permite que una máquina virtual Azure se comunique con el Internet y con recursos locales.
-    
-    - **Disk** Almacenamiento de la máquina virtual Azure.
-    
-3. **¿Al cerrar la conexión ssh con la VM, por qué se cae la aplicación que ejecutamos con el comando `npm FibonacciApp.js`? ¿Por qué debemos crear un *Inbound port rule* antes de acceder al servicio?**
-
-    Cuando nos conectamos a la máquina virtual mediante SSH, se inicia un proceso para este servicio y todos los comandos ejecutados a partir de ahi crearán hijos de dicho proceso, que terminarán en cuanto se finalice la conexión mediante SSH.
-
-    Se debe crear una regla de entrada en el puerto 3000 para exponer el servicio de FibonacciApp en internet y permitir el acceso externo esta regla puede ser TCP/UDP.
-
-4. **Adjunte tabla de tiempos e interprete por qué la función tarda tando tiempo.**
-    
-    ![1070000](https://github.com/aosfandres/lab-8-ARSW/blob/master/images/part1/25.PNG)
-    
-    ![1070009](https://github.com/aosfandres/lab-8-ARSW/blob/master/images/part1/24.PNG)
-
-    La implementación de la función de Fibonacci no aprovecha bien los recursos del sistema al estar implementada iterativamente y no usar más hilos, se repiten cálculos para hallar el resultado de cada iteración que podrían ser almacenados en memoria.
-
-5. **Adjunte imágen del consumo de CPU de la VM e interprete por qué la función consume esa cantidad de CPU.**
-
-  
-   
-   Cada petición consume gran parte de recursos de la cpu debido a que se realizan múltiples iteraciones en las que se realizan cálculos innecesarios, además no se implementa concurrencia lo que hace que se consuman más recursos y el tiempo de respuesta sea extenso.   
-   
-6. **Adjunte la imagen del resumen de la ejecución de Postman. Interprete:**
-
-   **Resumen B1ls**
-
-   El tiempo promedio de ejecución para cada petición fue de 27.4s y se recibió un total de 1.2MB
-   
-   Al realizar las peticiones concurrentes se evidenciaron 4 fallos en la conexión debido a que el servidor no soporta concurrencia.
-   
-   El tiempo promedio de ejecución para cada petición fue de 28.3s y se recibió un total de 1MB
-   
-   Al realizar las peticiones concurrentes se evidenciaron 5 fallos en la conexión debido a que el servidor no soporta concurrencia.
-   
-7. **¿Cuál es la diferencia entre los tamaños `B2ms` y `B1ls` (no solo busque especificaciones de infraestructura)?**
-
-    La máquina B1ls tiene menos capacidad que la máquina B2ms, es mucho más económica que la B2ms y solo está disponible para linux a diferencia de la B2ms.
-
-    Ambas máquinas son de uso general, y proporcionan un uso equilibrado de la CPU, son utilizadas para entornos de desarrollo y pruebas, por lo general el tráfico        soportado por estas es bajo/medio.
-
-8. **¿Aumentar el tamaño de la VM es una buena solución en este escenario?, ¿Qué pasa con la FibonacciApp cuando cambiamos el tamaño de la VM?**
-
-   Aumentar el tamaño de la máquina puede significar un consumo menor de recursos de cpu, sin embargo, no se observa mejora en los tiempos de respuesta de las peticiones ni en la capacidad de respuesta concurrente del sistema (algunas peticiones aún fallan). Si se desea mejorar los tiempos de respuesta se debe realizar una mejor implementación de la aplicación FibonacciApp.
-
-    Cuando cambiamos el tamaño de la máquina virtual es necesario reiniciarla, por lo tanto se pierde disponibilidad de la aplicación FibonacciApp ya que esta deja de funcionar mientras se reinicia.
-
-9. **¿Qué pasa con la infraestructura cuando cambia el tamaño de la VM? ¿Qué efectos negativos implica?**
-
-    Es necesario reiniciar la máquina, por lo tanto la infraestructura no estará disponible durante algunos minutos, lo cual implica que todas las peticiones entrantes durante estos minutos serán ignoradas. Si el sistema es consultado frecuentemente podría significar una perdida ya sea económica o de integridad de algunas transacciones realizadas por los clientes.    
-
-10. **¿Hubo mejora en el consumo de CPU o en los tiempos de respuesta? Si/No ¿Por qué?**
-
-    Si hubo mejora en el uso de cpu ya que el consumo fue del 13% en promedio comparado con el de la otra máquina que fue del 30%, esto se debe a que se disponen de más recursos para hacer los cálculos, sin embargo el tiempo de respuesta no mejoró considerablemente esto se debe a la implementación propia del programa.
-
-11. **Aumente la cantidad de ejecuciones paralelas del comando de postman a `4`. ¿El comportamiento del sistema es porcentualmente mejor?**
-    
-    El comportamiento del sistema no mejoró, el porcentaje de peticiones que fallan sigue siendo el 40%. El tiempo de respuesta no mejora significativamente, esto puede deberse a que el tamaño B2ms no mejora mucho los cores de cpu con respecto al tamaño B1ls.
+1. ¿Cuántos y cuáles recursos crea Azure junto con la VM?
+2. ¿Brevemente describa para qué sirve cada recurso?
+3. ¿Al cerrar la conexión ssh con la VM, por qué se cae la aplicación que ejecutamos con el comando `npm FibonacciApp.js`? ¿Por qué debemos crear un *Inbound port rule* antes de acceder al servicio?
+4. Adjunte tabla de tiempos e interprete por qué la función tarda tando tiempo.
+5. Adjunte imágen del consumo de CPU de la VM e interprete por qué la función consume esa cantidad de CPU.
+6. Adjunte la imagen del resumen de la ejecución de Postman. Interprete:
+    * Tiempos de ejecución de cada petición.
+    * Si hubo fallos documentelos y explique.
+7. ¿Cuál es la diferencia entre los tamaños `B2ms` y `B1ls` (no solo busque especificaciones de infraestructura)?
+8. ¿Aumentar el tamaño de la VM es una buena solución en este escenario?, ¿Qué pasa con la FibonacciApp cuando cambiamos el tamaño de la VM?
+9. ¿Qué pasa con la infraestructura cuando cambia el tamaño de la VM? ¿Qué efectos negativos implica?
+10. ¿Hubo mejora en el consumo de CPU o en los tiempos de respuesta? Si/No ¿Por qué?
+11. Aumente la cantidad de ejecuciones paralelas del comando de postman a `4`. ¿El comportamiento del sistema es porcentualmente mejor?
 
 ### Parte 2 - Escalabilidad horizontal
 
@@ -289,16 +221,84 @@ newman run ARSW_LOAD-BALANCING_AZURE.postman_collection.json -e [ARSW_LOAD-BALAN
 
 **Preguntas**
 
-**Preguntas**
+* **¿Cuáles son los tipos de balanceadores de carga en Azure y en qué se diferencian?, ¿Qué es SKU, qué tipos hay y en qué se diferencian?, ¿Por qué el balanceador de carga necesita una IP pública?**
 
-* ¿Cuáles son los tipos de balanceadores de carga en Azure y en qué se diferencian?, ¿Qué es SKU, qué tipos hay y en qué se diferencian?, ¿Por qué el balanceador de carga necesita una IP pública?
-* ¿Cuál es el propósito del *Backend Pool*?
-* ¿Cuál es el propósito del *Health Probe*?
-* ¿Cuál es el propósito de la *Load Balancing Rule*? ¿Qué tipos de sesión persistente existen, por qué esto es importante y cómo puede afectar la escalabilidad del sistema?.
-* ¿Qué es una *Virtual Network*? ¿Qué es una *Subnet*? ¿Para qué sirven los *address space* y *address range*?
-* ¿Qué son las *Availability Zone* y por qué seleccionamos 3 diferentes zonas?. ¿Qué significa que una IP sea *zone-redundant*?
-* ¿Cuál es el propósito del *Network Security Group*?
-* Informe de newman 1 (Punto 2)
-* Presente el Diagrama de Despliegue de la solución.
+    * **Balanceador de carga público:** Se utilizan para equilibrar la carga proveniente de internet a las máquinas virtuales, la dirección ip pública y el puerto del tráfico entrante son asignados a la dirección privada.
+        
+        ![Public loadbalancer](https://media.discordapp.net/attachments/352624122301513730/772862906710097990/unknown.png)
+        
+     * **Balanceador de carga interno (privado):** Se utiliza para equilibrar la carga del tráfico dentro de una red privada, solo utilizan ips privadas en la interfaz
+
+        ![Private loadbalancer](https://media.discordapp.net/attachments/352624122301513730/772863099367063592/unknown.png)
+        
+    * **SKU (Stock Keeping Unit):** Las unidades de mantenimiento de existencias son un código único asignado a un servicio en azure existen y representan la posibilidad para comprar existestencias. Existen varios tipos de sku entre estos tenemos:
+        * **Estándar:** Son productos estándar y se pueden vender individualmente o en paquetes conjuntos o colecciones.
+        * **Componente:**  Son productos incluidos en los paquetes, ensamblajes y colecciones, no pueden venderse individualmente.
+        * **Ensamblaje:** Se refieren a productos que se deben ensamblar antes del envío, todos los SKU deben estar dentro de la misma instalación esta debe ser local o de un proveedor Dropship/JIT/3PL.
+        * **Paquete:** No es necesario ensamblar antes del envío, debe haber disponibilidad completa y diferentes fuentes de cumplimiento.
+        * **Colección:**  Son asociados a productos de marketing y solo se pueden vender SKU asosciadas.
+        * **Virtual:** Son podructos que no necesitan instalación física, y no requieren un nivel de inventario.
+    
+            Para los balanceadores de carga se tienen 2 SKU Basic y Standard, estos definen la colección de productos a adquirir.
+            
+        El balanceador de carga necesita una **IP pública** para poder cumplir con su función que es capturar el tráfico y distribuirlo correctamente entre los diferentes nodos de la red.
+        
+* **¿Cuál es el propósito del Backend Pool?**
+        
+    **Backend Pool** es un componente del balacenador de carga que define el grupo de recursos que brindarán tráfico para una  Load Balancing Rule determinada, es un grupo de máquinas virtuales o instancias que atienden las solicitudes entrantes. Para escalar de manera rentable y satisfacer grandes volúmenes de tráfico entrante, generalmente se recomienda agregar más instancias a este grupo.
+
+* **¿Cuál es el propósito del Health Probe?**
+    
+    Cuando se configura un nuevo balanceador de carga se crea una **Health probe** que usará el balanceador para determinar si las instancias dentro del *Backend Pool* están en buen estado, si una instancia falla un determinado número de veces entonces esta dejará de dirigir tráfico hacia ella hasta que empiece a pasar las pruebas de estado nuevamente.
+
+* **¿Cuál es el propósito de la Load Balancing Rule? ¿Qué tipos de sesión persistente existen, por qué esto es importante y cómo puede afectar la escalabilidad del sistema?.**
+
+    Una **Load Balancing Rule** de un Load Balancer se usa para definir la manera de distibuir el tráfico entrante a todas las instancias dentro del *Backend Pool*. En Azure existen tres tipos de sesión de persistencia:
+
+   * **None (hash-based):** Especifica que las solicitudes sucesivas del mismo cliente pueden ser manejadas por cualquier máquina virtual. Los paquetes de la misma sesión TCP o UDP se dirigirán a la misma instancia de IP del Datacenter (DIP), pero cuando el cliente cierra y vuelve a abrir la conexión o inicia una nueva sesión desde la misma IP de origen, el puerto de origen cambia y hace que el tráfico vaya a un DIP diferente.
+   
+        ![](https://media.discordapp.net/attachments/352624122301513730/772882047517065286/MicrosoftTeams-image_7.png)
+
+   * **Client IP (source IP affinity 2-tuple o 3-tuple):** Especifica que las peticiones sucesivas de la misma dirección IP del cliente serán gestionadas por la misma máquina virtual. Azure Load Balancer se puede configurar para usar 2 tuplas (IP de origen, IP de destino) o 3 tuplas (IP de origen, IP de destino, Protocolo) para asignar el tráfico a los servidores disponibles.
+
+        ![](https://media.discordapp.net/attachments/352624122301513730/772882079343181864/MicrosoftTeams-image_6.png)
+
+* **¿Qué es una Virtual Network? ¿Qué es una Subnet? ¿Para qué sirven los address space y address range?**
+
+    * **Virtual Network:** Es una tecnología de red  que permite extender la red de área local sobre una red pública o no controlada (Internet). permite enviar y recibir datos sobre redes compartidas o públicas comportandose como una red privada aprovechando la funcionalidad, seguridad y políticas de gestión de una red privada. se implementan realizando conexiones dedicadas y/o cifrado.
+    
+    * **Subnet:** Es una segmentación de la red virtual (o cualquier red en general), permiten asignar una o varias subredes a la misma, estas subredes cuentan con un rango de direcciones apropiadas para una organización adecuada.
+    
+    * **Address space:** Cuando se crea una red virtual, se debe especificar un rango de direcciones ip privadas personalizadas (RFC 1918). Azure asigna a los recursos de una red virtual una dirección IP privada desde el espacio de direcciones que asigne. Por ejemplo, si implementa una máquina virtual en una red virtual con espacio de direcciones, 10.0.0.0/16, a la máquina virtual se le asignará una dirección IP privada como 10.0.0.4.
+    
+    * **Address range:** Indica cuantas direcciones se tienen en un address space y dependiendo de la cantidad de recursos que se necesiten en la red virtual, el rango aumentará o disminuirá.
+
+* **¿Qué son las Availability Zone y por qué seleccionamos 3 diferentes zonas?. ¿Qué significa que una IP sea zone-redundant?**
+
+    * **Zonas de disponibilidad:** Son Ubicaciones geográficas únicas dentro de una región. Cada zona se compone de uno o más centros de datos equipados con alimentación, refrigeración y redes independientes. Seleccionamos 3 zonas de disponibilidad diferentes para poder tener una mejor disponibiliad y tolerancia a fallos dentro del sistema. En caso de que falle alguno de los centros de datos anteriormente mencionados, el loadbalancer utilizará otro nodo de la red que se encontrará ubicado en otra ubicación geográfica, de esta manera se garantiza resiliencia y se disminuye la probabilidad de que el sistema se encuentre no disponible.
+    
+    * **IP zone-redundant:** Un gateway zone-redundant aporta resistencia, escalabilidad y disponibilidad a nuestro sistema, cuando utilizamos una ip zone-redundant azure separa física y lógicamente el gateway dentro de una region, lo cual permite mejorar la conectividad de la red privada y disminuye fallos a nivel de zona de disponibilidad.
+    
+* **¿Cuál es el propósito del Network Security Group?**
+
+    Permite filtrar el tráfico hacia y desde los recursos en una red virtual de Azure, un grupo de seguridad permite definir reglas de entrada y/o salida que permitan o denieguen el tráfico de red entrante o saliente de varios tipos de recursos de Azure.
+    
+* **Informe de newman 1 (Punto 2)**
+
+    [Informe](#Informe)
+
+* **Presente el Diagrama de Despliegue de la solución.**
+    ![Despliegue](https://media.discordapp.net/attachments/352624122301513730/772882775346380800/Deployment_Diagram0_1.png?width=686&height=475)
+
+## Referencias
+
+* https://docs.microsoft.com/en-us/azure/load-balancer/skus
+
+* https://azure.microsoft.com/en-us/pricing/calculator/
+
+* https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview
+
+* https://azure.microsoft.com/en-us/blog/azure-load-balancer-new-distribution-mode/
+
 
 
