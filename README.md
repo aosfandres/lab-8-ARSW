@@ -121,20 +121,87 @@ El consumo de la CPU se redujo pero los tiempos de espera no cambiaron.
 
 **Preguntas**
 
-1. ¿Cuántos y cuáles recursos crea Azure junto con la VM?
-2. ¿Brevemente describa para qué sirve cada recurso?
-3. ¿Al cerrar la conexión ssh con la VM, por qué se cae la aplicación que ejecutamos con el comando `npm FibonacciApp.js`? ¿Por qué debemos crear un *Inbound port rule* antes de acceder al servicio?
-4. Adjunte tabla de tiempos e interprete por qué la función tarda tando tiempo.
-5. Adjunte imágen del consumo de CPU de la VM e interprete por qué la función consume esa cantidad de CPU.
-6. Adjunte la imagen del resumen de la ejecución de Postman. Interprete:
-    * Tiempos de ejecución de cada petición.
-    * Si hubo fallos documentelos y explique.
-7. ¿Cuál es la diferencia entre los tamaños `B2ms` y `B1ls` (no solo busque especificaciones de infraestructura)?
-8. ¿Aumentar el tamaño de la VM es una buena solución en este escenario?, ¿Qué pasa con la FibonacciApp cuando cambiamos el tamaño de la VM?
-9. ¿Qué pasa con la infraestructura cuando cambia el tamaño de la VM? ¿Qué efectos negativos implica?
-10. ¿Hubo mejora en el consumo de CPU o en los tiempos de respuesta? Si/No ¿Por qué?
-11. Aumente la cantidad de ejecuciones paralelas del comando de postman a `4`. ¿El comportamiento del sistema es porcentualmente mejor?
+**Preguntas**
 
+1. **¿Cuántos y cuáles recursos crea Azure junto con la VM?**
+
+    Azure crea 6 recursos junto con la máquina virtual, estos son:
+    * Virtual Network
+    * Storage Account
+    * Public IP Address
+    * Network Security Group
+    * Network Interface
+    * Disk
+    
+2. **¿Brevemente describa para qué sirve cada recurso?**
+    
+    - **Virtual Network** tiene como objetivo brindar comunicación entre recursos de azure como Azure Virtual Machines, es similar a una red tradicional, sin embargo ofrece beneficios adicionales de Azure como escalabilidad, aislamiento y disponibilidad.
+    
+    - **Storage Account** contiene todos los objetos de datos de Azure Storage: blobs, archivos, colas, tablas y discos. Proporciona un espacio de nombres único para sus datos de Azure Storage al que se puede acceder desde cualquier lugar del mundo a través de HTTP o HTTPS, los datos de la cuenta de almacenamiento de Azure son duraderos y de alta disponibilidad, seguros y escalables de forma masiva.
+
+    - **Public IP Address** permite que los recursos de azure se comuniquen con internet y con servicios públicos de azure, esta dirección es asignada a un recurso hasta que este se elimine. Un recurso de dirección IP pública se puede asociar con: Interfaces de red de máquinas virtuales, balanceadores de carga orientados a Internet, pasarelas VPN, pasarelas de aplicación, cortafuegos Azure.
+    
+    - **Network Security Group** permite filtrar el tráfico hacia y desde los recursos en una red virtual de Azure, un grupo de seguridad permite definir reglas de entrada y/o salida que permitan o denieguen el tráfico de red entrante o saliente de varios tipos de recursos de Azure.
+    
+    - **Network Interface** permite que una máquina virtual Azure se comunique con el Internet y con recursos locales.
+    
+    - **Disk** Almacenamiento de la máquina virtual Azure.
+    
+3. **¿Al cerrar la conexión ssh con la VM, por qué se cae la aplicación que ejecutamos con el comando `npm FibonacciApp.js`? ¿Por qué debemos crear un *Inbound port rule* antes de acceder al servicio?**
+
+    Cuando nos conectamos a la máquina virtual mediante SSH, se inicia un proceso para este servicio y todos los comandos ejecutados a partir de ahi crearán hijos de dicho proceso, que terminarán en cuanto se finalice la conexión mediante SSH.
+
+    Se debe crear una regla de entrada en el puerto 3000 para exponer el servicio de FibonacciApp en internet y permitir el acceso externo esta regla puede ser TCP/UDP.
+
+4. **Adjunte tabla de tiempos e interprete por qué la función tarda tando tiempo.**
+    
+    ![1070000](https://github.com/aosfandres/lab-8-ARSW/blob/master/images/part1/25.PNG)
+    
+    ![1070009](https://github.com/aosfandres/lab-8-ARSW/blob/master/images/part1/24.PNG)
+
+    La implementación de la función de Fibonacci no aprovecha bien los recursos del sistema al estar implementada iterativamente y no usar más hilos, se repiten cálculos para hallar el resultado de cada iteración que podrían ser almacenados en memoria.
+
+5. **Adjunte imágen del consumo de CPU de la VM e interprete por qué la función consume esa cantidad de CPU.**
+
+  
+   
+   Cada petición consume gran parte de recursos de la cpu debido a que se realizan múltiples iteraciones en las que se realizan cálculos innecesarios, además no se implementa concurrencia lo que hace que se consuman más recursos y el tiempo de respuesta sea extenso.   
+   
+6. **Adjunte la imagen del resumen de la ejecución de Postman. Interprete:**
+
+   **Resumen B1ls**
+
+   El tiempo promedio de ejecución para cada petición fue de 27.4s y se recibió un total de 1.2MB
+   
+   Al realizar las peticiones concurrentes se evidenciaron 4 fallos en la conexión debido a que el servidor no soporta concurrencia.
+   
+   El tiempo promedio de ejecución para cada petición fue de 28.3s y se recibió un total de 1MB
+   
+   Al realizar las peticiones concurrentes se evidenciaron 5 fallos en la conexión debido a que el servidor no soporta concurrencia.
+   
+7. **¿Cuál es la diferencia entre los tamaños `B2ms` y `B1ls` (no solo busque especificaciones de infraestructura)?**
+
+    La máquina B1ls tiene menos capacidad que la máquina B2ms, es mucho más económica que la B2ms y solo está disponible para linux a diferencia de la B2ms.
+
+    Ambas máquinas son de uso general, y proporcionan un uso equilibrado de la CPU, son utilizadas para entornos de desarrollo y pruebas, por lo general el tráfico        soportado por estas es bajo/medio.
+
+8. **¿Aumentar el tamaño de la VM es una buena solución en este escenario?, ¿Qué pasa con la FibonacciApp cuando cambiamos el tamaño de la VM?**
+
+   Aumentar el tamaño de la máquina puede significar un consumo menor de recursos de cpu, sin embargo, no se observa mejora en los tiempos de respuesta de las peticiones ni en la capacidad de respuesta concurrente del sistema (algunas peticiones aún fallan). Si se desea mejorar los tiempos de respuesta se debe realizar una mejor implementación de la aplicación FibonacciApp.
+
+    Cuando cambiamos el tamaño de la máquina virtual es necesario reiniciarla, por lo tanto se pierde disponibilidad de la aplicación FibonacciApp ya que esta deja de funcionar mientras se reinicia.
+
+9. **¿Qué pasa con la infraestructura cuando cambia el tamaño de la VM? ¿Qué efectos negativos implica?**
+
+    Es necesario reiniciar la máquina, por lo tanto la infraestructura no estará disponible durante algunos minutos, lo cual implica que todas las peticiones entrantes durante estos minutos serán ignoradas. Si el sistema es consultado frecuentemente podría significar una perdida ya sea económica o de integridad de algunas transacciones realizadas por los clientes.    
+
+10. **¿Hubo mejora en el consumo de CPU o en los tiempos de respuesta? Si/No ¿Por qué?**
+
+    Si hubo mejora en el uso de cpu ya que el consumo fue del 13% en promedio comparado con el de la otra máquina que fue del 30%, esto se debe a que se disponen de más recursos para hacer los cálculos, sin embargo el tiempo de respuesta no mejoró considerablemente esto se debe a la implementación propia del programa.
+
+11. **Aumente la cantidad de ejecuciones paralelas del comando de postman a `4`. ¿El comportamiento del sistema es porcentualmente mejor?**
+    
+    El comportamiento del sistema no mejoró, el porcentaje de peticiones que fallan sigue siendo el 40%. El tiempo de respuesta no mejora significativamente, esto puede deberse a que el tamaño B2ms no mejora mucho los cores de cpu con respecto al tamaño B1ls.
 ### Parte 2 - Escalabilidad horizontal
 
 #### Crear el Balanceador de Carga
@@ -207,8 +274,27 @@ Realice este proceso para las 3 VMs, por ahora lo haremos a mano una por una, si
 http://52.155.223.248/
 http://52.155.223.248/fibonacci/1
 ```
+![](images/part2/1.PNG)
+![](images/part2/2.PNG)
+
 
 2. Realice las pruebas de carga con `newman` que se realizaron en la parte 1 y haga un informe comparativo donde contraste: tiempos de respuesta, cantidad de peticiones respondidas con éxito, costos de las 2 infraestrucruras, es decir, la que desarrollamos con balanceo de carga horizontal y la que se hizo con una maquina virtual escalada.
+- Vertical:
+![](images/part2/2.PNG)
+
+- Tiempo: 3m 45s 4ms
+- Respuestas con exito: Todas
+- Costo infraestructura: $67 aprox
+
+- Horizontal:
+![](images/part2/3.PNG)
+
+- Tiempo: 3m 30s 3ms
+- Respuestas con exito: Todas
+- Costo infraestructura: $27 aprox
+
+#Conclusion:
+- los tiempos de respuesta no varian mucho, pero por costo y probabilidad de perdidas en las respuestas resulta mejor, en este caso, implementar una infraestructura con escalabilidad horizontal, ya que la vertical se puede volver muy costosa ademas de ser limitada y no se desempeña tan bien.
 
 3. Agregue una 4 maquina virtual y realice las pruebas de newman, pero esta vez no lance 2 peticiones en paralelo, sino que incrementelo a 4. Haga un informe donde presente el comportamiento de la CPU de las 4 VM y explique porque la tasa de éxito de las peticiones aumento con este estilo de escalabilidad.
 
@@ -218,6 +304,12 @@ newman run ARSW_LOAD-BALANCING_AZURE.postman_collection.json -e [ARSW_LOAD-BALAN
 newman run ARSW_LOAD-BALANCING_AZURE.postman_collection.json -e [ARSW_LOAD-BALANCING_AZURE].postman_environment.json -n 10 &
 newman run ARSW_LOAD-BALANCING_AZURE.postman_collection.json -e [ARSW_LOAD-BALANCING_AZURE].postman_environment.json -n 10
 ```
+![](images/part2/6.PNG)
+![](images/part2/7.PNG)
+![](images/part2/8.PNG)
+![](images/part2/9.PNG)
+
+- La respuestas son menos probables que se pierdan con una escalabilidad horizontal pues al tener mas nodos se distribuye entre ellos cada una de las solicitudes.
 
 **Preguntas**
 
