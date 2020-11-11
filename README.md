@@ -280,14 +280,14 @@ http://52.155.223.248/fibonacci/1
 
 2. Realice las pruebas de carga con `newman` que se realizaron en la parte 1 y haga un informe comparativo donde contraste: tiempos de respuesta, cantidad de peticiones respondidas con éxito, costos de las 2 infraestrucruras, es decir, la que desarrollamos con balanceo de carga horizontal y la que se hizo con una maquina virtual escalada.
 - Vertical:
-![](images/part2/2.PNG)
+![](images/part2/3.PNG)
 
 - Tiempo: 3m 45s 4ms
 - Respuestas con exito: Todas
 - Costo infraestructura: $67 aprox
 
 - Horizontal:
-![](images/part2/3.PNG)
+![](images/part2/4.PNG)
 
 - Tiempo: 3m 30s 3ms
 - Respuestas con exito: Todas
